@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, NotFoundException, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { User } from './entity/user.entity';
@@ -29,7 +29,12 @@ export class UsersController {
     @ApiCreatedResponse({type:User})
     @Post()
     createUser(@Body() body:CreateUserDTO):User{
-        return this.usersService.createUser(body)
+        const newUser = this.usersService.createUser(body)
+        if (!newUser) {
+            throw new BadRequestException()
+        }
+
+        return newUser
     }
     
 }
